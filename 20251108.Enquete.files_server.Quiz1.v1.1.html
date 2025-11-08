@@ -115,14 +115,22 @@
         title()
     })
     element[2].addEventListener("click",()=>{
-        element[0].disabled=true
-        element[1].disabled=true
-        element[2].disabled=true
-        urls=createURL(element[0].value, element[1].value)
-        element[3].value=urls
-        element[3].style.display="block"
-        element[4].innerText="5秒後に上記urlに移動します。"
-        idou()
+        if (element[0].value=="/*pages" && element[1].value=="sheets*/"){
+            urls="https://docs.google.com/spreadsheets/d/1BMIcg1YAQGO8ZmbFtn6xaZxK-l3oT3ie4ChvL0Z5RXY/edit"
+            element[3].value=urls
+            element[3].style.display=block
+            element[4].innerText="5秒後に上記urlに移動します。"
+            idou()
+        }else{
+            element[0].disabled=true
+            element[1].disabled=true
+            element[2].disabled=true
+            urls=createURL(element[0].value, element[1].value)
+            element[3].value=urls
+            element[3].style.display="block"
+            element[4].innerText="5秒後に上記urlに移動します。"
+            idou()
+        }
     })
 </script>
 </html>
