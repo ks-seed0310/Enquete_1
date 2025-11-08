@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang=ja>
+<head>
+<meta charset=utf-8>
+<style>
+.input_{
+    font-size:32px;
+}
+#url_1{
+    width:100%;
+}
+</style>
+</head>
+<body>
+<input class="input_" id=text1 placeholder="回答1つ目を入力">
+<input class="input_" id=text2 placeholder="回答2つ目を入力">
+<button id="send1">送信</button>
+<input id=url_1 style="display:none" disabled>
+<p id=under_op></p>
+</body>
+<script>
+    // URL生成関数
+    function createURL(t1, t2){
+        // サーバー側固定 mapping
+        const mapping = {
+            idKey:    "aZbF1234",
+            tokKey:   "qRtY5678",
+            enKey:    "xLpM9012",
+            tsKey:    "uN1v3456",
+            nonceKey: "H3kL7890",
+            csKey:    "QwEr2468",
+            t1Key:    "T1kL1357",
+            t2Key:    "T2kM8642",
+            dummy1:   "DumA9999",
+            dummy2:   "DumB8888",
+            dummy3:   "XyZq7410",
+            dummy4:   "PqRs8520"
+        };
+
+        // ランダム値生成
+        const id = Math.floor(Math.random()*1e+6);
+        const tok = Math.floor(Math.random()*1e+12);
+        const ts = Date.now();
+        const nonce = Math.floor(Math.random()*1e+6);
+
+        // en 計算
+        const en_val = tok*7 + id*13 + ts*3 + nonce*19;
+
+        // チェックサム
+        const mod = 1000003;
+        const cs = (tok%mod + en_val%mod + ts%mod + nonce%mod)%mod;
+
+        // URLパラメータにセット
+        const params = {};
+        params[mapping.idKey]    = id;
+        params[mapping.tokKey]   = tok;
+        params[mapping.enKey]    = en_val;
+        params[mapping.tsKey]    = ts;
+        params[mapping.nonceKey] = nonce;
+        params[mapping.csKey]    = cs;
+        params[mapping.t1Key]    = encodeURIComponent(t1);
+        params[mapping.t2Key]    = encodeURIComponent(t2);
+
+        // ダミーをランダム値にして意味不明に
+        params[mapping.dummy1] = Math.floor(Math.random()*1e+8) + 100000000;
+        params[mapping.dummy2] = Math.floor(Math.random()*1e+9) + 200000000;
+        params[mapping.dummy3] = Math.floor(Math.random()*1e+10) + 3000000000;
+        params[mapping.dummy4] = Math.floor(Math.random()*1e+6) + 400000;
+
+        // URL作成
+        const baseURL = "https://script.google.com/a/macros/s.kansai.soka.ed.jp/s/AKfycbyQqyXeUulnOfWELACWtVGxDk9Bg4W1OGHfFXb_ilyUKohs-kenZvw0mdGnh4HMVDZ35Q/exec";
+        const query = Object.entries(params).map(([k,v])=>`${k}=${v}`).join("&");
+        return `${baseURL}?${query}`;
+    }
+    
+    document.title="編集-Quiz1.v1.1.協力のお願い送信フォーム"
+    const element = [
+        document.getElementById("text1"),
+        document.getElementById("text2"),
+        document.getElementById("send1"),
+        document.getElementById("url_1"),
+        document.getElementById("under_op"),
+    ]
+    urls=""
+    element[3].style.display="none"
+    
+    function title (_title="入力中-Quiz1 v1.1 送信フォーム",_title_return="Quiz1.v1.1.協力のお願い送信フォーム",_time=2500){
+        document.title=_title
+        setTimeout(()=>{
+            document.title=_title_return
+        },_time)
+    }
+    function idou(){
+        setTimeout(()=>{
+            element[4].innerText="4秒後に上記urlに移動します。"
+        },1000)
+        setTimeout(()=>{
+            element[4].innerText="3秒後に上記urlに移動します。"
+        },2000)
+        setTimeout(()=>{
+            element[4].innerText="2秒後に上記urlに移動します。"
+        },3000)
+        setTimeout(()=>{
+            element[4].innerText="1秒後に上記urlに移動します。"
+        },4000)
+        setTimeout(()=>{
+            element[4].innerHTML=`上記urlに移動します。移動しない場合は<a href=${urls}>こちら</a>をクリックしてください。`
+            location.href=urls
+        },5000)
+    }
+    element[0].addEventListener("input",()=>{
+        title()
+    })
+    element[1].addEventListener("input",()=>{
+        title()
+    })
+    element[2].addEventListener("click",()=>{
+        element[0].disabled=true
+        element[1].disabled=true
+        element[2].disabled=true
+        urls=createURL(element[0].value, element[1].value)
+        element[3].value=urls
+        element[3].style.display="block"
+        element[4].innerText="5秒後に上記urlに移動します。"
+        idou()
+    })
+</script>
+</html>
